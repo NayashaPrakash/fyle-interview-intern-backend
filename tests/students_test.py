@@ -10,6 +10,15 @@ def test_get_assignments_student_1(client, h_student_1):
     for assignment in data:
         assert assignment['student_id'] == 1
 
+def test_post_assignments_student_1(client, h_student_1):
+    """Method not allowed"""
+    response = client.post(
+        '/student/assignments',
+        headers=h_student_1
+    )
+
+    assert response.status_code == 400
+
 
 def test_get_assignments_student_2(client, h_student_2):
     response = client.get(
@@ -57,29 +66,83 @@ def test_post_assignment_student_1(client, h_student_1):
     assert data['teacher_id'] is None
 
 
-def test_submit_assignment_student_1(client, h_student_1):
-    response = client.post(
-        '/student/assignments/submit',
+def test_edit_assignment_student_1(client, h_student_1):
+    """To test successful editing of an assignment"""
+
+    draft_response = client.post(
+        '/student/assignments',
         headers=h_student_1,
         json={
-            'id': 2,
-            'teacher_id': 2
+            'content': 'initial content'
+        })
+    
+    draft_data = draft_response.json['data']
+    draft_id = draft_data['id']
+
+    response = client.post (
+        '/student/assignments',
+        headers=h_student_1,
+        json={
+            'id': draft_id,
+            'content': 'Hooray!!!'
         })
 
     assert response.status_code == 200
 
     data = response.json['data']
-    assert data['student_id'] == 1
-    assert data['state'] == 'SUBMITTED'
-    assert data['teacher_id'] == 2
+    assert data['content'] == 'Hooray!!!'
+    assert data['state'] == 'DRAFT'
+    assert data['teacher_id'] is None
 
 
-def test_assignment_resubmit_error(client, h_student_1):
+def test_submit_assignment_student_1(client, h_student_1):
     response = client.post(
         '/student/assignments/submit',
         headers=h_student_1,
         json={
-            'id': 2,
+            'id': 3,
+            'teacher_id': 2
+        })
+    # Since a submtted assignment cannot be resubmitted by a student
+    assert response.status_code == 400
+
+
+def test_submit_assignment_student_2(client, h_student_2):
+    """Only draft assignments can be subitted by a student to a teacher"""
+
+    draft_response = client.post(
+        '/student/assignments',
+        headers=h_student_2,
+        json={
+            'content': 'hamburgers'
+        })
+    
+    assert draft_response.status_code == 200
+    draft_data = draft_response.json['data']
+
+    draft_id = draft_data['id']
+    response = client.post(
+        '/student/assignments/submit',
+        headers=h_student_2,
+        json={
+            'id': draft_id,
+            'teacher_id': 2
+        })
+    
+    assert response.status_code == 200
+    
+    data = response.json['data']
+    assert data['student_id'] == 2
+    assert data['state'] == 'SUBMITTED'
+    assert data['teacher_id'] == 2
+
+
+def test_assignment_resubmit_error(client, h_student_2):
+    response = client.post(
+        '/student/assignments/submit',
+        headers=h_student_2,
+        json={
+            'id': 3,
             'teacher_id': 2
         })
     error_response = response.json

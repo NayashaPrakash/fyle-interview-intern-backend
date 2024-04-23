@@ -1,3 +1,5 @@
+from core.models.assignments import AssignmentStateEnum, GradeEnum
+
 def test_get_assignments_teacher_1(client, h_teacher_1):
     response = client.get(
         '/teacher/assignments',
@@ -10,6 +12,14 @@ def test_get_assignments_teacher_1(client, h_teacher_1):
     for assignment in data:
         assert assignment['teacher_id'] == 1
 
+def test_post_assignments_teacher_1(client, h_teacher_1):
+    """Method not allowed"""
+    response = client.post(
+        '/teacher/assignments',
+        headers=h_teacher_1
+    )
+
+    assert response.status_code == 405
 
 def test_get_assignments_teacher_2(client, h_teacher_2):
     response = client.get(
@@ -42,7 +52,6 @@ def test_grade_assignment_cross(client, h_teacher_2):
     data = response.json
 
     assert data['error'] == 'FyleError'
-
 
 def test_grade_assignment_bad_grade(client, h_teacher_1):
     """
@@ -99,3 +108,41 @@ def test_grade_assignment_draft_assignment(client, h_teacher_1):
     data = response.json
 
     assert data['error'] == 'FyleError'
+
+def test_teacher_grade_assignment(client, h_teacher_2, h_student_2):
+    """For checking whether assignment is being graded by teacher appropriately"""
+
+    create_draft_response = client.post(
+        '/student/assignments',
+        headers=h_student_2,
+        json={
+            'content': 'hamburgers'
+        })
+    
+    assert create_draft_response.status_code == 200
+    create_draft_data = create_draft_response.json['data']
+
+    draft_id = create_draft_data['id']
+    draft_response = client.post(
+        '/student/assignments/submit',
+        headers=h_student_2,
+        json={
+            'id': draft_id,
+            'teacher_id': 2
+        })
+    
+    assert draft_response.status_code == 200
+    
+    response = client.post(
+        '/teacher/assignments/grade',
+        json={
+            'id': draft_id,
+            'grade': GradeEnum.D.value
+        },
+        headers=h_teacher_2
+    )
+
+    assert response.status_code == 200
+
+    assert response.json['data']['state'] == AssignmentStateEnum.GRADED.value
+    assert response.json['data']['grade'] == GradeEnum.D
