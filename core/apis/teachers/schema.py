@@ -17,9 +17,4 @@ class TeacherSchema(SQLAlchemyAutoSchema):
     def initiate_class(self, data_dict, many, partial):
         # pylint: disable=unused-argument,no-self-use
         return Teacher(**data_dict)
-
-
-
-# db corruptable since user needs to created beforehand - must
-# sqlite does not have concept of foreign key
-# sqlite does not have concept of time format
+    
