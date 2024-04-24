@@ -1,56 +1,38 @@
-# Fyle Backend Challenge
+## Set Up
 
-## Who is this for?
+1. Clone the forked repository and proceed with the steps mentioned below:
+```
+git clone https://github.com/NayashaPrakash/fyle-interview-intern-backend.git
+```
+Move to your project directory to proceed with the following steps.
 
-This challenge is meant for candidates who wish to intern at Fyle and work with our engineering team. You should be able to commit to at least 6 months of dedicated time for internship.
+2. Run the docker container.
+```
+docker-compose build
+docker-compose up
+```
+3. List the running containers by the following command.
+```
+docker ps
+```
+You can check the container name under NAMES column here.
 
-## Why work at Fyle?
-
-Fyle is a fast-growing Expense Management SaaS product. We are ~40 strong engineering team at the moment. 
-
-We are an extremely transparent organization. Check out our [careers page](https://careers.fylehq.com) that will give you a glimpse of what it is like to work at Fyle. Also, check out our Glassdoor reviews [here](https://www.glassdoor.co.in/Reviews/Fyle-Reviews-E1723235.htm). You can read stories from our teammates [here](https://stories.fylehq.com).
-
-
-## Challenge outline
-
-This challenge involves writing a backend service for a classroom. The challenge is described in detail [here](./Application.md)
-
-
-## What happens next?
-
-You will hear back within 48 hours from us via email. 
-
-
-## Installation
-
-1. Fork this repository to your github account
-2. Clone the forked repository and proceed with steps mentioned below
-
-### Install requirements
+4. Start the bash shell.
+```
+docker exec -it <container_name> bash
+```
+5. Set up database.
 
 ```
-virtualenv env --python=python3.8
-source env/bin/activate
-pip install -r requirements.txt
+make db
 ```
-### Reset DB
+6. Start the server.
 
 ```
-export FLASK_APP=core/server.py
-rm core/store.sqlite3
-flask db upgrade -d core/migrations/
+make server
 ```
-### Start Server
+7. Run the following command to run tests and get test coverage report. 
 
 ```
-bash run.sh
-```
-### Run Tests
-
-```
-pytest -vvv -s tests/
-
-# for test coverage report
-# pytest --cov
-# open htmlcov/index.html
+make test
 ```
