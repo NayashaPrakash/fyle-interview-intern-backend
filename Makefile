@@ -1,4 +1,4 @@
-.PHONY: server test
+.PHONY: server test db
 
 server:
 	@echo "Running server..."

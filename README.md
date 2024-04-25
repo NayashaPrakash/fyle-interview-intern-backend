@@ -8,31 +8,27 @@ Move to your project directory to proceed with the following steps.
 
 2. Run the docker container.
 ```
-docker-compose build
 docker-compose up
 ```
-3. List the running containers by the following command.
-```
-docker ps
-```
-You can check the container name under NAMES column here.
 
-4. Start the bash shell.
-```
-docker exec -it <container_name> bash
-```
-5. Set up database.
+To run without docker, you can proceed with the following steps:
+1. Set up database.
+>>>>>>> Stashed changes
 
 ```
 make db
 ```
-6. Start the server.
+
+2. Start the server.
+>>>>>>> Stashed changes
 
 ```
 make server
 ```
-7. Run the following command to run tests and get test coverage report. 
 
+3. Run the following command to run tests and get test coverage report. 
+
+>>>>>>> Stashed changes
 ```
 make test
 ```

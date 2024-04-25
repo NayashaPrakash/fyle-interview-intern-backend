@@ -12,7 +12,7 @@ services:
       - app-net
 
     volumes:
-      - ./:/home/
+      - ./:/app/
 
 
 networks:
