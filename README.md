@@ -13,14 +13,12 @@ docker-compose up
 
 To run without docker, you can proceed with the following steps:
 1. Set up database.
->>>>>>> Stashed changes
 
 ```
 make db
 ```
 
 2. Start the server.
->>>>>>> Stashed changes
 
 ```
 make server
@@ -28,7 +26,6 @@ make server
 
 3. Run the following command to run tests and get test coverage report. 
 
->>>>>>> Stashed changes
 ```
 make test
 ```
